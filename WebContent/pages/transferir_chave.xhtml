@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml"></ui:include>
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<f:event listener="#{transferenciaBean.carregarListagem}" type="preRenderView" />
+		<h:form id="frmProdListagem">
+			<p:dataTable id="tblProdListagem" widgetVar="tabelaProdListagem"
+				value="#{transferenciaBean.transferencias}" var="item"
+				emptyMessage="Nenhum registro encontrado" paginator="true" rows="10"
+				filteredValue="#{transferenciaBean.transferenciasFiltradas}">
+				<f:facet name="header">
+					<h:outputText value="Histórico" />
+				</f:facet>
+				
+				<p:column headerText="Aluno" filterBy="#{item.alunoAnterior.nome}"
+					sortBy="#{item.alunoAnterior.nome}" filterMatchMode="contains">
+					<h:outputText value="#{item.alunoAnterior.nome}" />
+				</p:column>
+				<p:column headerText="Matrícula"  filterBy="#{item.alunoAnterior.matricula}"
+					sortBy="#{item.alunoAnterior.matricula}" filterMatchMode="contains">
+					<h:outputText value="#{item.alunoAnterior.matricula}" />
+						
+				</p:column>
+				<p:column headerText="Data da Posse" 
+				 filterBy="#{item.dataHoraPosseChave}"
+					sortBy="#{item.dataHoraPosseChave}" filterMatchMode="contains">
+					<h:outputText value="#{item.dataHoraPosseChave}" />
+				</p:column>
+				<p:column headerText="Data de Entrega"
+					filterBy="#{item.dataHoraEntregaChave}"
+					sortBy="#{item.dataHoraEntregaChave}" filterMatchMode="contains">
+					<h:outputText value="#{item.dataHoraEntregaChave}" />
+				</p:column>
+				
+				<f:facet name="footer">
+					<p:commandButton value="Novo"
+						oncomplete="PF('dlgProdNovo').show();"
+						actionListener="#{alunoBean.prepararNovo}"
+						update=":frmProdNovo:pnlProdNovo :msgGlobal" />
+				</f:facet>
+
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog widgetVar="dlgProdNovo" closable="false" draggable="false"
+			resizable="false" header="Usuário - Novo" modal="true"
+			appendTo="@(body)">
+			<h:form id="frmProdNovo">
+				<h:panelGrid id="pnlProdNovo" columns="2">
+					<p:outputLabel  value="Nome" />
+					<p:inputText    value="#{alunoBean.aluno.nome}" maxlength="50"
+						size="30" required="true" requiredMessage="O campo nome é obrigatório"/>
+							
+					<p:outputLabel  value="Matrícula" />
+					<p:inputText value="#{alunoBean.aluno.matricula}" size="15" 
+								 required="true" requiredMessage="O campo matrícula é obrigatório" >
+								
+					</p:inputText>
+					<p:outputLabel value="Email" />
+					<p:inputText value="#{alunoBean.aluno.email}" size="30"
+								 required="true" requiredMessage="O campo email é obrigatório" 
+							>
+							
+					</p:inputText>
+				
+								 
+					<p:outputLabel  value="Departamento" />
+					<p:selectOneMenu  value="#{alunoBean.aluno.departamento.id}"	filter="true"
+									 required="true" requiredMessage="O campo departamento é obrigatório">
+						<f:selectItem itemValue="" itemLabel="Selecione um departamento" />
+						<f:selectItems value="#{alunoBean.departamentos}" var="item"
+							itemValue="#{item.id}" itemLabel="#{item.nome}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+				
+				<h:panelGrid columns="2">
+					<p:commandButton value="Gravar" actionListener="#{alunoBean.novo}"
+						update=":msgGlobal :frmProdListagem:tblProdListagem"
+						oncomplete="verificar(xhr, status, args, 'dlgProdNovo', 'tabelaProdListagem'); " />
+					<p:commandButton value="Cancelar" process="@this"
+						oncomplete="PF('dlgProdNovo').hide();">
+						<p:resetInput target="pnlProdNovo" />		
+					</p:commandButton>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgProdExcluir" closable="false"
+			draggable="false" resizable="false" header="Usuário - Excluir"
+			modal="true" appendTo="@(body)">
+			<h:form id="frmProdExcluir">
+				<h:panelGrid id="pnlProdExcluir" columns="2">
+				
+					<h:outputLabel value="Nome: " />
+					<h:outputText value="#{alunoBean.aluno.nome}" />
+					<h:outputLabel value="Matrícula: " />
+					<h:outputText value="#{alunoBean.aluno.matricula}">
+						
+					</h:outputText>
+					<h:outputLabel value="Email: " />
+					<h:outputText value="#{alunoBean.aluno.email}" />
+					<h:outputLabel value="Departamento " />
+					<h:outputText value="#{alunoBean.aluno.departamento.nome}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir"
+						actionListener="#{alunoBean.excluir}"
+						update=":msgGlobal :frmProdListagem:tblProdListagem"
+						oncomplete="PF('dlgProdExcluir').hide(); tabelaProdListagem.clearFilters();" />
+					<p:commandButton value="Cancelar" oncomplete="PF('dlgProdExcluir').hide();" />	
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgProdEditar" closable="false" draggable="false"
+			resizable="false" header="Usuário - Editar" modal="true"
+			appendTo="@(body)">
+			<h:form id="frmProdEditar">
+				<h:panelGrid id="pnlProdEditar" columns="2">
+			
+				
+					<p:outputLabel  value="Nome" />
+					<p:inputText value="#{alunoBean.aluno.nome}" maxlength="50"
+						size="30" required="true" requiredMessage="O Campo descrição é obrigatório" />
+						
+					<p:outputLabel value="Matrícula"  />
+					<p:inputText  value="#{alunoBean.aluno.matricula}" size="15" required="true">
+				    </p:inputText>
+					
+					<p:outputLabel value="Email" />
+					<p:inputText  value="#{alunoBean.aluno.email}" size="30" required="true"
+								 >
+								
+					</p:inputText>
+					
+					<p:outputLabel for="dcFabProdEditar" value="Fabricante" />
+					<p:selectOneMenu id="dcFabProdEditar" value="#{alunoBean.aluno.departamento.id}"
+						filter="true" required="true" requiredMessage="O Campo Departamento é obrigatório">
+						<f:selectItem itemValue="" itemLabel="Selecione um departamento" />
+						<f:selectItems value="#{alunoBean.departamentos}" var="item"
+							itemValue="#{item.id}" itemLabel="#{item.nome}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+				
+				<h:panelGrid columns="2">
+					<p:commandButton value="Editar" actionListener="#{alunoBean.editar}"
+						update=":msgGlobal :frmProdListagem:tblProdListagem"
+						oncomplete="verificar(xhr, status, args, 'dlgProdEditar', 'tabelaProdListagem');" />
+					<p:commandButton value="Cancelar" process="@this" oncomplete="PF('dlgProdEditar').hide();">
+						<p:resetInput target="pnlProdEditar" />
+					</p:commandButton>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
