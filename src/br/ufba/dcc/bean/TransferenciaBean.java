@@ -10,6 +10,7 @@ import br.ufba.dcc.dao.AlunoDAO;
 import br.ufba.dcc.dao.TransferenciaDAO;
 import br.ufba.dcc.domain.Aluno;
 import br.ufba.dcc.domain.Departamento;
+import br.ufba.dcc.domain.Status;
 import br.ufba.dcc.domain.Transferencia;
 import br.ufba.dcc.util.JSFUtil;
 
@@ -55,6 +56,24 @@ public class TransferenciaBean {
 		}
 	}
 
+	public void solicitarTransferencia(){
+		try{
+		TransferenciaDAO dao = new TransferenciaDAO();
+		Aluno alunoAnterior = new Aluno();
+		alunoAnterior.setId(1);
+		Status status = new Status();
+		status.setId(1);
+		transferencia.setStatus(status);
+		transferencia.setAlunoAnterior(alunoAnterior);
+		dao.salvar(transferencia);
+		
+		//transferencias = dao.listar();
+		JSFUtil.adicionarMensagemSucesso("Solicitação enviada");
+		}catch(SQLException e){
+			e.printStackTrace();
+			JSFUtil.adicionarMensagensErro(e.getMessage());
+		}
+	}
 
 	public ArrayList<Transferencia> getTransferencias() {
 		return transferencias;

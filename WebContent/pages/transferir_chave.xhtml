@@ -69,7 +69,7 @@
 				</h:panelGrid>
 				
 				<h:panelGrid columns="2">
-					<p:commandButton value="Enviar Solicitação" actionListener="#{alunoBean.novo}"
+					<p:commandButton value="Enviar Solicitação" actionListener="#{transferenciaBean.solicitarTransferencia}"
 						update=":msgGlobal :frmProdListagem:tblProdListagem"
 						oncomplete="verificar(xhr, status, args, 'dlgProdNovo', 'tabelaProdListagem'); " />
 					<p:commandButton value="Cancelar" process="@this"
