@@ -1,10 +1,16 @@
 package br.ufba.dcc.domain;
 
+import java.io.Serializable;
+
 /**
  * Created by Bruno on 21/03/2017.
  */
-public class Chave {
+public class Chave implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6447918873387038363L;
 	private Integer id;
     private String descricao;
     

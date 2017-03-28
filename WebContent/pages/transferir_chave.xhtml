@@ -45,7 +45,7 @@
 				<f:facet name="footer">
 					<p:commandButton value="Novo"
 						oncomplete="PF('dlgProdNovo').show();"
-						actionListener="#{alunoBean.prepararNovo}"
+						actionListener="#{transferenciaBean.prepararNovo}"
 						update=":frmProdNovo:pnlProdNovo :msgGlobal" />
 				</f:facet>
 
@@ -53,38 +53,23 @@
 		</h:form>
 
 		<p:dialog widgetVar="dlgProdNovo" closable="false" draggable="false"
-			resizable="false" header="Usuário - Novo" modal="true"
+			resizable="false" header="Trasferir Chave" modal="true"
 			appendTo="@(body)">
 			<h:form id="frmProdNovo">
 				<h:panelGrid id="pnlProdNovo" columns="2">
-					<p:outputLabel  value="Nome" />
-					<p:inputText    value="#{alunoBean.aluno.nome}" maxlength="50"
-						size="30" required="true" requiredMessage="O campo nome é obrigatório"/>
-							
-					<p:outputLabel  value="Matrícula" />
-					<p:inputText value="#{alunoBean.aluno.matricula}" size="15" 
-								 required="true" requiredMessage="O campo matrícula é obrigatório" >
-								
-					</p:inputText>
-					<p:outputLabel value="Email" />
-					<p:inputText value="#{alunoBean.aluno.email}" size="30"
-								 required="true" requiredMessage="O campo email é obrigatório" 
-							>
-							
-					</p:inputText>
 				
-								 
-					<p:outputLabel  value="Departamento" />
-					<p:selectOneMenu  value="#{alunoBean.aluno.departamento.id}"	filter="true"
-									 required="true" requiredMessage="O campo departamento é obrigatório">
-						<f:selectItem itemValue="" itemLabel="Selecione um departamento" />
-						<f:selectItems value="#{alunoBean.departamentos}" var="item"
-							itemValue="#{item.id}" itemLabel="#{item.nome}" />
+				
+					<p:outputLabel  value="Aluno:" />
+					<p:selectOneMenu  value="#{transferenciaBean.transferencia.alunoPosterior.id}"	filter="true"
+									 required="true" requiredMessage="O campo aluno é obrigatório">
+						<f:selectItem itemValue="" itemLabel="Selecione um aluno" />
+						<f:selectItems value="#{transferenciaBean.alunos}" var="item"
+							itemValue="#{item.id}" itemLabel="#{item.nome} - #{item.matricula}" />
 					</p:selectOneMenu>
 				</h:panelGrid>
 				
 				<h:panelGrid columns="2">
-					<p:commandButton value="Gravar" actionListener="#{alunoBean.novo}"
+					<p:commandButton value="Enviar Solicitação" actionListener="#{alunoBean.novo}"
 						update=":msgGlobal :frmProdListagem:tblProdListagem"
 						oncomplete="verificar(xhr, status, args, 'dlgProdNovo', 'tabelaProdListagem'); " />
 					<p:commandButton value="Cancelar" process="@this"

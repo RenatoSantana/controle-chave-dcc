@@ -13,8 +13,8 @@ public class Transferencia implements Serializable{
 
 	
 	private Chave chave;
-	private Aluno alunoAnterior;
-	private Aluno alunoPosterior;
+	private Aluno alunoAnterior = new Aluno();
+	private Aluno alunoPosterior = new Aluno();
 	private Date dataHoraPosseChave;
 	private Date dataHoraEntregaChave;
 	private Status status;
