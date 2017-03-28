@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import br.ufba.dcc.domain.Aluno;
 import br.ufba.dcc.domain.Departamento;
 import br.ufba.dcc.domain.Instituto;
 import br.ufba.dcc.factory.ConexaoFactory;

@@ -1,6 +1,7 @@
 package br.ufba.dcc.bean;
 
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -15,9 +16,13 @@ import br.ufba.dcc.util.JSFUtil;
 
 @ManagedBean
 @ViewScoped
-public class AlunoBean {
+public class AlunoBean implements Serializable {
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2304317605730864107L;
 	private ArrayList<Aluno> alunos;
 	private ArrayList<Aluno> alunosFiltrados;
 	

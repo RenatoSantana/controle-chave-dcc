@@ -11,26 +11,25 @@ import br.ufba.dcc.dao.AlunoDAO;
 import br.ufba.dcc.dao.TransferenciaDAO;
 import br.ufba.dcc.domain.Aluno;
 import br.ufba.dcc.domain.Chave;
-import br.ufba.dcc.domain.Departamento;
 import br.ufba.dcc.domain.Status;
 import br.ufba.dcc.domain.Transferencia;
 import br.ufba.dcc.util.JSFUtil;
 
 @ManagedBean
 @ViewScoped
-public class TransferenciaBean implements Serializable {
-
+public class ChaveBean  implements Serializable{
+	
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6805507747342829000L;
+	private static final long serialVersionUID = 5324385599157879521L;
 	private ArrayList<Transferencia> transferencias;
 	private ArrayList<Transferencia> transferenciasFiltradas;
 
 	private Transferencia transferencia;
 	
-	private ArrayList<Aluno> alunos;
+
 	
 
 
@@ -39,9 +38,9 @@ public class TransferenciaBean implements Serializable {
 	public void carregarListagem(){
 		try{
 			TransferenciaDAO dao = new TransferenciaDAO();
-			Departamento departamento = new Departamento();
-			departamento.setId(1);
-			transferencias=dao.listarHistoricoTrasferenciaLab(departamento);
+			Aluno aluno = new Aluno();
+			aluno.setId(3);
+			transferencias=dao.listarSolicitacao(aluno);
 		}catch(SQLException e){
 			e.printStackTrace();
 			JSFUtil.adicionarMensagensErro(e.getMessage());
@@ -51,11 +50,19 @@ public class TransferenciaBean implements Serializable {
 
 	
 	public void prepararNovo(){
-		try{
-		transferencia = new Transferencia();
-		AlunoDAO dao = new AlunoDAO();
-		alunos = dao.listar();
+	
 		
+		
+	}
+	
+	public void excluirSolicitacao (){
+		try{
+	    TransferenciaDAO dao = new TransferenciaDAO();
+		
+		dao.excluirSolicitacao(transferencia);
+		carregarListagem();
+		
+		JSFUtil.adicionarMensagemSucesso("Solitação removida com sucesso");
 		}catch(SQLException e){
 			e.printStackTrace();
 			JSFUtil.adicionarMensagensErro(e.getMessage());
@@ -127,18 +134,7 @@ public class TransferenciaBean implements Serializable {
 
 
 
-	public ArrayList<Aluno> getAlunos() {
-		return alunos;
-	}
 
-
-
-
-	public void setAlunos(ArrayList<Aluno> alunos) {
-		this.alunos = alunos;
-	}
-
-	
 
 	
 
