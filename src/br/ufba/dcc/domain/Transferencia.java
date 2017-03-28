@@ -11,7 +11,7 @@ public class Transferencia implements Serializable{
 	private static final long serialVersionUID = -5983206047086273584L;
 
 
-	
+	private Integer id;
 	private Chave chave;
 	private Aluno alunoAnterior = new Aluno();
 	private Aluno alunoPosterior = new Aluno();
@@ -56,6 +56,12 @@ public class Transferencia implements Serializable{
 	}
 	public void setAlunoAnterior(Aluno alunoAnterior) {
 		this.alunoAnterior = alunoAnterior;
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

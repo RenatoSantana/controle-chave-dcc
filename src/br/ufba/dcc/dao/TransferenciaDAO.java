@@ -1,6 +1,7 @@
 package br.ufba.dcc.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +28,8 @@ public class TransferenciaDAO {
 
 		comando.setInt(1, trasferencia.getChave().getId());
 		comando.setInt(2, trasferencia.getAlunoAnterior().getId());
-		comando.setInt(4, trasferencia.getAlunoPosterior().getId());
+		comando.setInt(3, trasferencia.getAlunoPosterior().getId());
+		comando.setNull(4, java.sql.Types.DATE);
 		comando.setNull(5, java.sql.Types.DATE);
 		comando.setInt(6, trasferencia.getStatus().getId());
 
@@ -37,7 +39,7 @@ public class TransferenciaDAO {
 
 	public ArrayList<Transferencia> listarHistoricoTrasferenciaLab(Departamento dep)throws SQLException{
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT cca.dataHoraPosseChave,cca.dataHoraEntregaChave,a.id , a.nome, a.matricula, a2.id,a2.nome, a2.matricula , s.descricao")
+		sql.append("SELECT cca.dataHoraPosseChave,cca.dataHoraEntregaChave, cca.id, a.id , a.nome, a.matricula, a2.id,a2.nome, a2.matricula , s.descricao")
 		.append(" FROM chave_com_aluno cca ")
 		.append(" INNER JOIN status  s  ON cca.id_status  = s.id ")
 		.append(" INNER JOIN aluno  a  ON cca.id_aluno_anterior  = a.id ")
@@ -63,6 +65,7 @@ public class TransferenciaDAO {
 		while(resultado.next()){
 			Transferencia transferencia = new Transferencia();
 
+			transferencia.setId(resultado.getInt("cca.id"));
 			Aluno aluno = new Aluno();
 			aluno.setId(resultado.getInt("a.id"));
 			aluno.setNome(resultado.getString("a.nome"));
@@ -98,7 +101,7 @@ public class TransferenciaDAO {
 
 	public ArrayList<Transferencia> listarSolicitacao(Aluno a)throws SQLException{
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT cca.dataHoraPosseChave,cca.dataHoraEntregaChave,a.id , a.nome, a.matricula, a2.id,a2.nome, a2.matricula , s.descricao")
+		sql.append("SELECT cca.dataHoraPosseChave,cca.dataHoraEntregaChave, cca.id, a.id , a.nome, a.matricula, a2.id,a2.nome, a2.matricula , s.descricao")
 		.append(" FROM chave_com_aluno cca ")
 		.append(" INNER JOIN status  s  ON cca.id_status  = s.id ")
 		.append(" INNER JOIN aluno  a  ON cca.id_aluno_anterior  = a.id ")
@@ -123,7 +126,7 @@ public class TransferenciaDAO {
 
 		while(resultado.next()){
 			Transferencia transferencia = new Transferencia();
-
+			transferencia.setId(resultado.getInt("cca.id"));
 			Aluno aluno = new Aluno();
 			aluno.setId(resultado.getInt("a.id"));
 			aluno.setNome(resultado.getString("a.nome"));
@@ -155,17 +158,51 @@ public class TransferenciaDAO {
 		return itens;	
 
 	}
-	
-	
+
+
 	public void excluirSolicitacao(Transferencia a)throws SQLException{
 		StringBuilder sql = new StringBuilder();
 		sql.append("DELETE FROM chave_com_aluno ");
-		sql.append("WHERE id_aluno_posterior = ? ");
+		sql.append("WHERE id = ? ");
 
 		Connection conexao = (Connection) ConexaoFactory.conectar();
 		PreparedStatement comando = (PreparedStatement) conexao.prepareStatement(sql.toString());
-		comando.setInt(1, a.getAlunoPosterior().getId());
+		comando.setInt(1, a.getId());
 		comando.executeUpdate();		
+	}
+
+
+
+
+	public void aceitarSolicitacao(Transferencia a) throws SQLException{
+		StringBuilder sql = new StringBuilder();
+		sql.append(" UPDATE chave_com_aluno ")
+		.append(" SET dataHoraPosseChave = ? , id_status = 2 ")
+		.append(" WHERE id = ? " );
+
+		Connection conexao = (Connection) ConexaoFactory.conectar();
+		PreparedStatement comando = (PreparedStatement) conexao.prepareStatement(sql.toString());
+
+		comando.setDate(1, new Date(a.getDataHoraPosseChave().getTime()) );
+		comando.setInt(2, a.getId());
+
+		int retorno  =comando.executeUpdate();
+
+		if(retorno == 1){
+			sql = new StringBuilder();
+			sql.append(" UPDATE chave_com_aluno ")
+			.append(" SET dataHoraEntregaChave = ? , id_status = 3 ")
+			.append(" WHERE id_aluno_anterior = ? and dataHoraEntregaChave is null and id_status = 2");
+
+			conexao = (Connection) ConexaoFactory.conectar();
+			comando = (PreparedStatement) conexao.prepareStatement(sql.toString());
+
+			comando.setInt(1, a.getAlunoAnterior().getId());
+	
+
+			comando.executeUpdate();
+		}
+
 	}
 
 }

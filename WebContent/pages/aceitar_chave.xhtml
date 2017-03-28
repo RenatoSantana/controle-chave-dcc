@@ -36,9 +36,9 @@
 						<f:setPropertyActionListener value="#{item}"
 							target="#{chaveBean.transferencia}" />
 					</p:commandButton>
-					<p:commandButton icon="ui-icon-check" actionListener="#{alunoBean.prepararEditar}" 
-									 oncomplete="PF('dlgProdEditar').show();" update=":msgGlobal :frmProdEditar:pnlProdEditar">
-									 <f:setPropertyActionListener value="#{item}" target="#{alunoBean.aluno}" />
+					<p:commandButton icon="ui-icon-check" 
+									 oncomplete="PF('dlgProdEditar').show();" update=":msgGlobal">
+									 <f:setPropertyActionListener value="#{item}" target="#{chaveBean.transferencia}"/>
 						
 					</p:commandButton>
 				</p:column>
@@ -71,41 +71,17 @@
 		</p:dialog>
 		
 		<p:dialog widgetVar="dlgProdEditar" closable="false" draggable="false"
-			resizable="false" header="Usuário - Editar" modal="true"
+			resizable="false" header="Aceitar Chave" modal="true"
 			appendTo="@(body)">
 			<h:form id="frmProdEditar">
-				<h:panelGrid id="pnlProdEditar" columns="2">
-			
 				
-					<p:outputLabel  value="Nome" />
-					<p:inputText value="#{alunoBean.aluno.nome}" maxlength="50"
-						size="30" required="true" requiredMessage="O Campo descrição é obrigatório" />
-						
-					<p:outputLabel value="Matrícula"  />
-					<p:inputText  value="#{alunoBean.aluno.matricula}" size="15" required="true">
-				    </p:inputText>
-					
-					<p:outputLabel value="Email" />
-					<p:inputText  value="#{alunoBean.aluno.email}" size="30" required="true"
-								 >
-								
-					</p:inputText>
-					
-					<p:outputLabel for="dcFabProdEditar" value="Fabricante" />
-					<p:selectOneMenu id="dcFabProdEditar" value="#{alunoBean.aluno.departamento.id}"
-						filter="true" required="true" requiredMessage="O Campo Departamento é obrigatório">
-						<f:selectItem itemValue="" itemLabel="Selecione um departamento" />
-						<f:selectItems value="#{alunoBean.departamentos}" var="item"
-							itemValue="#{item.id}" itemLabel="#{item.nome}" />
-					</p:selectOneMenu>
-				</h:panelGrid>
 				
 				<h:panelGrid columns="2">
-					<p:commandButton value="Editar" actionListener="#{alunoBean.editar}"
+					<p:commandButton value="Aceitar" actionListener="#{chaveBean.aceitarSolicitacao}"
 						update=":msgGlobal :frmProdListagem:tblProdListagem"
 						oncomplete="verificar(xhr, status, args, 'dlgProdEditar', 'tabelaProdListagem');" />
 					<p:commandButton value="Cancelar" process="@this" oncomplete="PF('dlgProdEditar').hide();">
-						<p:resetInput target="pnlProdEditar" />
+						
 					</p:commandButton>
 				</h:panelGrid>
 			</h:form>

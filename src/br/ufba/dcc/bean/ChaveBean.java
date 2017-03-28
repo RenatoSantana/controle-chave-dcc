@@ -3,6 +3,7 @@ package br.ufba.dcc.bean;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -54,6 +55,27 @@ public class ChaveBean  implements Serializable{
 		
 		
 	}
+	
+	
+	
+	public void aceitarSolicitacao (){
+		try{
+	    TransferenciaDAO dao = new TransferenciaDAO();
+		
+	    transferencia.setDataHoraPosseChave(new Date());
+	    Status status = new Status();
+	    status.setId(2);
+	    transferencia.setStatus(status);
+		dao.aceitarSolicitacao(transferencia);
+		carregarListagem();
+		
+		JSFUtil.adicionarMensagemSucesso("Solitação aceita com sucesso");
+		}catch(SQLException e){
+			e.printStackTrace();
+			JSFUtil.adicionarMensagensErro(e.getMessage());
+		}
+	}
+
 	
 	public void excluirSolicitacao (){
 		try{
